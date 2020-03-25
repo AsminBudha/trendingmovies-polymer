@@ -1,7 +1,7 @@
 import { LitElement, html, css } from "lit-element";
 
 import { COLORS } from "../../constants/color";
-
+import { IMAGE_THUMBNAIL_URL } from "../../constants/api";
 class MovieCard extends LitElement {
   static get styles() {
     return css`
@@ -11,6 +11,9 @@ class MovieCard extends LitElement {
         margin-bottom: 12px;
         color: ${COLORS.primaryTextColor};
         background-color: ${COLORS.secondaryBgColor};
+      }
+      .card-wrapper img {
+        flex-shrink: 0;
       }
       .card-content {
         padding-left: 16px;
@@ -26,47 +29,77 @@ class MovieCard extends LitElement {
         display: flex;
         align-items: baseline;
         font-size: 24px;
+        margin-bottom: 0;
+        margin-top: 0;
       }
-      .movie-title ul li {
+      .secondary-text li {
         float: left;
         margin-left: 24px;
+        line-height: 12px;
       }
-      .movie-title ul {
+      .secondary-text ul {
         margin-left: 0;
         padding-left: 0;
+        margin-top: 4px;
+        display: flex;
       }
-      .movie-title ul li:first-child {
-        margin-left: 12px;
+      .secondary-text ul li:first-child {
+        margin-left: 0;
         list-style-type: none;
       }
 
       .trailer {
+        color: inherit;
         font-size: 16px;
+        text-decoration: none;
       }
     `;
+  }
+
+  static get properties() {
+    return {
+      data: {
+        type: Object,
+        hasChanged(newVal, oldVal) {
+          console.log(newVal, oldVal);
+        }
+      }
+    };
+  }
+
+  constructor() {
+    super();
+
+    this.data = {};
+  }
+  attributeChangedCallback(name, oldVal, newVal) {
+    super.attributeChangedCallback(name, oldVal, newVal);
   }
 
   render() {
     return html`
       <div class="card-wrapper">
         <img
-          src="https://image.tmdb.org/t/p/w200//y55oBgf6bVMI7sFNXwJDrSIxPQt.jpg"
+          src="${IMAGE_THUMBNAIL_URL.replace(
+            ":imageId",
+            this.data.poster_path
+          )}"
           width="120"
         />
         <div class="card-content">
           <h1 class="primary-text">
-            8.5 <span class="secondary-text">/10</span>
+            ${this.data.vote_average} <span class="secondary-text">/10</span>
           </h1>
           <h1 class="movie-title">
-            West World
-            <span class="secondary-text">
-              <ul>
-                <li>Action</li>
-                <li>Drama</li>
-              </ul>
-            </span>
+            ${this.data.title || this.data.name || ""}
           </h1>
-          <p class="trailer">Watch Trailer</p>
+          <div class="secondary-text">
+            <ul>
+              <li>Action</li>
+              <li>Drama</li>
+            </ul>
+          </div>
+          <a href="#" class="trailer">Watch Trailer</a>
         </div>
       </div>
     `;

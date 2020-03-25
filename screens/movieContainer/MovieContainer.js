@@ -26,9 +26,26 @@ class MovieContainer extends LitElement {
     `;
   }
 
+  static get properties() {
+    return {
+      tvShowsList: { type: Array },
+      movieList: { type: Array }
+    };
+  }
+
+  constructor() {
+    super();
+    this.tvShowsList = [];
+    this.movieList = [];
+  }
+
   firstUpdated() {
     Promise.all(keys.map(item => fetchTrendingByKey(item))).then(res => {
-      console.log(res);
+      Promise.all(res.map(item => item.json())).then(data => {
+        console.log(data);
+        this.tvShowsList = data[0].results;
+        this.movieList = data[1].results;
+      });
     });
   }
 
@@ -40,8 +57,11 @@ class MovieContainer extends LitElement {
             Trending Tv Shows
           </h1>
           <div class="content-wrapper">
-            <movie-card></movie-card>
-            <movie-card></movie-card>
+            ${this.tvShowsList.map(tvShow => {
+              return html`
+                <movie-card data=${JSON.stringify(tvShow)} />
+              `;
+            })}
           </div>
         </div>
         <div class="container">
@@ -49,8 +69,11 @@ class MovieContainer extends LitElement {
             Trending Movies
           </h1>
           <div class="content-wrapper">
-            <movie-card></movie-card>
-            <movie-card></movie-card>
+            ${this.movieList.map(movie => {
+              return html`
+                <movie-card data=${JSON.stringify(movie)} />
+              `;
+            })}
           </div>
         </div>
       </div>

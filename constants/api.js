@@ -9,3 +9,5 @@ export const TRENDING_URL = `${BASE_URL}/trending/:key/day`;
 export const GENRE_URL = `${BASE_URL}/genre/:categoryKey/list`;
 
 export const EXTERNAL_ID_URL = `${BASE_URL}/movie/:movieId/external_ids`;
+
+export const IMAGE_THUMBNAIL_URL = "https://image.tmdb.org/t/p/w200/:imageId";
